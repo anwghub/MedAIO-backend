@@ -17,6 +17,10 @@ const AppointmentSchema = new Schema({
     type: Date,
     required: true
   },
+  appointment_time: {
+    type: String, // Optional: Could also be a Date if you want to store it as a complete DateTime
+    required: true
+  },
   status: {
     type: String,
     enum: ['confirmed', 'pending', 'canceled'],
