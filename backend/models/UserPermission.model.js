@@ -1,16 +1,16 @@
-const mongoose = require('mongoose');
-const permissionModel = require('./Permission.model');
+import mongoose from 'mongoose';
+//import Permission from './Permission.model';
 
 const UserPermissionSchema = new mongoose.Schema({
-    user_id:{
+    user_id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'User'
     },
-    permissions:[{
+    permissions: [{
         permission_name: String,
-        permission_value: [Number]  //0->create, 1->read, 2->edit, 3->delete
+        permission_value: [Number]  // 0 -> create, 1 -> read, 2 -> edit, 3 -> delete
     }]
-    
 });
-module.exports = mongoose.model("UserPermission",UserPermissionSchema);
+
+export default mongoose.model("UserPermission", UserPermissionSchema);

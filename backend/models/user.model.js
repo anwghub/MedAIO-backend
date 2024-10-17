@@ -31,6 +31,6 @@ const userSchema = new mongoose.Schema({
   resetPasswordExpiresAt: Date,
   verificationToken: String,
   verificationTokenExpiresAt: Date,
-},{timestamps: true});//createdat and updatedat fields will be automatically added into the document
+},{timestamps: true});//createdate and updatedate fields will be automatically added into the document
 
 export const User = mongoose.model("User", userSchema);
