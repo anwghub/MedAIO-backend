@@ -180,7 +180,7 @@ export const logout = async (req, res) => {
         res.status(200).json({
             success: true,
             msg: 'Logout successful!',
-            token: null // You can send a null token or empty it from the client
+            token: null 
         });
     } catch (error) {
         res.status(500).json({
