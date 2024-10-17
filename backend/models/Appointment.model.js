@@ -18,7 +18,7 @@ const AppointmentSchema = new Schema({
     required: true
   },
   appointment_time: {
-    type: String, // Optional: Could also be a Date if you want to store it as a complete DateTime
+    type: Date, 
     required: true
   },
   status: {
