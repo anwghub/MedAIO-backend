@@ -1,7 +1,8 @@
 import { User } from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
+import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
-import {generateTokenAndSetCookie}  from "../utils/generateTokenAndSetCookie.js";
+import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 
 export const signup = async (req, res) => {
     const { email, password, name } = req.body;
@@ -69,7 +70,7 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        // Validate request
+        // Validate the request
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
@@ -79,22 +80,14 @@ export const login = async (req, res) => {
             });
         }
 
-        const { email, password, verificationToken } = req.body;
+        const { email, password } = req.body;
 
         // Find user by email
         const userData = await User.findOne({ email });
         if (!userData) {
             return res.status(401).json({
                 success: false,
-                msg: 'Email and password are incorrect',
-            });
-        }
-
-        // Check if verification token exists and is still valid
-        if (userData.verificationToken !== verificationToken || userData.verificationTokenExpiresAt < Date.now()) {
-            return res.status(403).json({
-                success: false,
-                msg: 'Verification token is invalid or expired. Please verify your account.',
+                msg: 'Email or password is incorrect',
             });
         }
 
@@ -103,20 +96,26 @@ export const login = async (req, res) => {
         if (!isPasswordMatch) {
             return res.status(401).json({
                 success: false,
-                msg: 'Email and password are incorrect',
+                msg: 'Email or password is incorrect',
             });
         }
 
-        // Generate JWT token and set in cookies
-        generateTokenAndSetCookie(res, userData._id);
+        // Generate JWT token
+        const accessToken = jwt.sign(
+            { id: userData._id, email: userData.email },
+            process.env.JWT_SECRET, // Ensure this is in your .env file
+            { expiresIn: '1h' }
+        );
 
-        // Send response
+        // Send success response with the token
         return res.status(200).json({
             success: true,
-            msg: 'Login successful!!',
+            msg: 'Login successful!',
+            tokenType: 'Bearer',
+            accessToken,
             user: {
                 ...userData._doc,
-                password: undefined,  // Do not expose the password in the response
+                password: undefined, // Don't expose the password in the response
             },
         });
     } catch (error) {
@@ -164,7 +163,7 @@ export const login = async (req, res) => {
 //                 password: undefined,
 //             },
 //         });
-     
+
 //     }catch(error){
 //         res.status(400).json({success:false,message: error.message});
 //     }
@@ -174,6 +173,20 @@ export const login = async (req, res) => {
 //     res.send("Login route");
 // }
 
+
 export const logout = async (req, res) => {
-    res.send("Logout route");
-}
+    try {
+        // Invalidate the token by clearing it on the client side
+        res.status(200).json({
+            success: true,
+            msg: 'Logout successful!',
+            token: null // You can send a null token or empty it from the client
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            msg: 'Logout failed',
+        });
+    }
+};
+
