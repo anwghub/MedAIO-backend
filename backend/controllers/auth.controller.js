@@ -126,6 +126,22 @@ export const login = async (req, res) => {
     }
 };
 
+export const logout = async (req, res) => {
+    try {
+        // Invalidate the token by clearing it on the client side
+        res.status(200).json({
+            success: true,
+            msg: 'Logout successful!',
+            token: null 
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            msg: 'Logout failed',
+        });
+    }
+};
+
 // export const signup  = async (req, res) => {
 //     const { email, password, name } = req.body;
 //     try {
@@ -169,24 +185,6 @@ export const login = async (req, res) => {
 //     }
 // }
 
-// export const login  = async (req, res) => {
-//     res.send("Login route");
-// }
 
 
-export const logout = async (req, res) => {
-    try {
-        // Invalidate the token by clearing it on the client side
-        res.status(200).json({
-            success: true,
-            msg: 'Logout successful!',
-            token: null 
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            msg: 'Logout failed',
-        });
-    }
-};
 
