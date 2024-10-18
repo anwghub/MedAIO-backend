@@ -19,3 +19,18 @@ export const logoutValidator = [
     check('token', 'Token is required for logout').not().isEmpty(),
 ];
 
+export const forgotPasswordValidator = [
+    check('email')
+        .isEmail()
+        .withMessage('Please provide a valid email'),
+];
+
+export const resetPasswordValidator = [
+    check('token')
+        .notEmpty()
+        .withMessage('Token is required'),
+    check('newPassword')
+        .isLength({ min: 6 })
+        .withMessage('Password must be at least 6 characters long'),
+];
+
